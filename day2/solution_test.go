@@ -6,42 +6,61 @@ import (
 )
 
 type report struct {
-	levels []int
-	safe   bool
+	levels   []int
+	safe     bool
+	softSafe bool
+}
+
+var tests = []report{
+	{
+		levels:   []int{7, 6, 4, 2, 1},
+		safe:     true,
+		softSafe: true,
+	},
+	{
+		levels:   []int{1, 2, 7, 8, 9},
+		safe:     false,
+		softSafe: false,
+	},
+	{
+		levels:   []int{9, 7, 6, 2, 1},
+		safe:     false,
+		softSafe: false,
+	},
+	{
+		levels:   []int{1, 3, 2, 4, 5},
+		safe:     false,
+		softSafe: true,
+	},
+	{
+		levels:   []int{8, 6, 4, 4, 1},
+		safe:     false,
+		softSafe: true,
+	},
+	{
+		levels:   []int{1, 3, 6, 7, 9},
+		safe:     true,
+		softSafe: true,
+	},
 }
 
 func TestSafeLevels(t *testing.T) {
-	var tests = []report{
-		{
-			levels: []int{7, 6, 4, 2, 1},
-			safe:   true,
-		},
-		{
-			levels: []int{1, 2, 7, 8, 9},
-			safe:   false,
-		},
-		{
-			levels: []int{9, 7, 6, 2, 1},
-			safe:   false,
-		},
-		{
-			levels: []int{1, 3, 2, 4, 5},
-			safe:   false,
-		},
-		{
-			levels: []int{8, 6, 4, 4, 1},
-			safe:   false,
-		},
-		{
-			levels: []int{1, 3, 6, 7, 9},
-			safe:   true,
-		},
-	}
 
 	for i, report := range tests {
 		isSafe := SafeLevels(report.levels)
 
 		if isSafe != report.safe {
+			t.Errorf("Test %d: Does not match safety - Expected: %t, Actual: %t", i, report.safe, isSafe)
+		}
+	}
+}
+
+func TestSoftSafeLevels(t *testing.T) {
+
+	for i, report := range tests {
+		isSafe := SoftSafeLevels(report.levels)
+
+		if isSafe != report.softSafe {
 			t.Errorf("Test %d: Does not match safety - Expected: %t, Actual: %t", i, report.safe, isSafe)
 		}
 	}

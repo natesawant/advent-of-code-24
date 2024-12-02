@@ -13,6 +13,9 @@ func main() {
 
 	count := CountSafeReports(reports)
 	fmt.Printf("Safe Reports = %d\n", count)
+
+	count = CountSoftSafeReports(reports)
+	fmt.Printf("Soft Safe Reports = %d\n", count)
 }
 
 func CountSafeReports(reports [][]int) int {
@@ -20,6 +23,18 @@ func CountSafeReports(reports [][]int) int {
 
 	for _, levels := range reports {
 		if SafeLevels(levels) {
+			count += 1
+		}
+	}
+
+	return count
+}
+
+func CountSoftSafeReports(reports [][]int) int {
+	count := 0
+
+	for _, levels := range reports {
+		if SoftSafeLevels(levels) {
 			count += 1
 		}
 	}
@@ -50,6 +65,24 @@ func SafeLevels(levels []int) bool {
 		prev = curr
 	}
 	return true
+}
+
+func SoftSafeLevels(levels []int) bool {
+	for i := range len(levels) {
+		copySlice := make([]int, len(levels))
+		copy(copySlice, levels)
+
+		removed := remove(copySlice, i)
+		if SafeLevels(removed) {
+			return true
+		}
+	}
+
+	return false
+}
+
+func remove(slice []int, s int) []int {
+	return append(slice[:s], slice[s+1:]...)
 }
 
 func ParseFile(filepath string) [][]int {
